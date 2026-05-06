@@ -9,6 +9,7 @@
     <script src="https://d3js.org/d3.v7.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/topojson/3.0.0/topojson.min.js"></script>
     <script src="{{url_for('static',filename='js/map.js')}}"></script>
+    <script src="{{url_for('static',filename='js/plot.js')}}"></script>
 
 </head>
 <body>
@@ -36,9 +37,11 @@
 
 
 <script>
-    let data = {{ data | safe }};
-    console.log(data);
+    let full_data = {{ full_data | safe }};
+    let pca_data = {{ pca_data | safe }};
+<!--    console.log(pca_data);-->
     initMap();
+    initPlot();
 </script>
 
 </body>
