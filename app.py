@@ -28,17 +28,20 @@ def data():
     # --- Task 2: PCA (Most recent year: 2020) ---
     # recent_year = 2020
     recent_year = filtered_df['year'].max()
+    # filtered_df = filtered_df.fillna(filtered_df.groupby('Country Name').transform('max'))
+    # filtered_df = filtered_df.fillna(filtered_df.groupby('Country Name').ffill().bfill())
+    filtered_df = filtered_df.fillna(filtered_df.groupby('Country Name').bfill().ffill())
     df_recent = filtered_df[filtered_df['year'] == recent_year].copy()
 
     # Select numeric columns, excluding ID columns
     features = df_recent.select_dtypes(include=['float64', 'int64']).drop(columns=['year'], errors='ignore')
 
-    # 2. CRITICAL: Remove columns that are 100% NaN for this specific selection
     # PCA cannot handle a feature that has zero variance or zero data
-    features = features.dropna(axis=1, how='all')
+    # features = features.dropna(axis=1, how='all')
 
     # PCA requires no NaNs. We fill with column means.
     features_filled = features.fillna(features.mean())
+    # features_filled = features.fillna(0)
 
     # Scaling
     scaled_data = StandardScaler().fit_transform(features_filled)
@@ -52,7 +55,7 @@ def data():
     columns_to_extract = [
         'Country Name',
         'Access to electricity (% of population)',
-        'Agricultural land (% of land area)',
+        'Agricultural irrigated land (% of total agricultural land)',
         'Average precipitation in depth (mm per year)',
         'Employment in agriculture (% of total employment) (modeled ILO estimate)',
         'GDP per capita (current US$)',
