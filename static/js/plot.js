@@ -78,14 +78,20 @@ function initPlot() {
         // Task 5 Prep: Trigger map highlight
         if(window.highlightMapCountry) highlightMapCountry(d.country);
     })
-    .on("mousemove", function(event) {
+    .on("mousemove", function(event, d) {
         tooltip.style("top", (event.pageY - 10) + "px")
                .style("left", (event.pageX + 10) + "px");
+
+        // CALL THE HIGHLIGHT FUNCTION (The link!)
+        highlightCountryOnMap(d.country);
     })
     .on("mouseout", function() {
         tooltip.style("visibility", "hidden");
         d3.select(this).attr("r", 5).attr("fill", "#4e79a7");
 
         if(window.highlightMapCountry) highlightMapCountry(null);
+
+        // CLEAR THE HIGHLIGHT
+        highlightCountryOnMap(null);
     });
 }

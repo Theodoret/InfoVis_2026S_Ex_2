@@ -52,3 +52,20 @@ function initMap() {
 
 
 }
+
+function highlightCountryOnMap(countryName) {
+    // 1. Select all country paths in the map SVG
+    d3.select("#svg_map").selectAll("path")
+        .classed("highlighted", function(d) {
+            // Check if this map feature matches the hovered country
+            // Use .id or .properties.name depending on your TopoJSON
+            return d.properties.admin === countryName;
+        });
+
+    // 2. Optional: Bring the highlighted country to the front
+//    if (countryName) {
+//        d3.select("#svg_map").selectAll("path")
+//          .filter(d => d.properties.admin === countryName)
+//          .raise();
+//    }
+}

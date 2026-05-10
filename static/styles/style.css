@@ -94,3 +94,10 @@ text.title {
     box-shadow: rgba(0, 0, 0, 0.05) 0 0 0 1px, rgb(209, 213, 219) 0 0 0 1px inset;
     opacity: 0.0; font-size: large;
 }
+
+/* Highlight style (Task 5) */
+.highlighted {
+    fill: orange !important;
+    stroke: #333;
+    stroke-width: 2px;
+}
