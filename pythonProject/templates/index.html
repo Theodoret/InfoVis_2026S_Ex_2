@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>InfoVis VU 2026</title>
+
+    <link rel="stylesheet" type="text/css" href="{{url_for('static',filename='styles/style.css')}}">
+
+
+</head>
+<body>
+<div id="tooltip" style="position: absolute;
+    opacity: 0;
+    pointer-events: none;
+    background-color: #d3d3d3;
+    padding: 5px 3px; "></div>
+<h1>InfoVis VU 2026 - Exercise 2</h1>
+<p>Enter your name and Matrikelnummer</p>
+
+<div id = "dropdown_div" class="dd_container">
+<div id="controls_line_plot" class="dd_container" style="margin-top: 20px;">
+    <label for="indicator_change">Select Indicator for Line Plot:</label>
+    <select id="indicator_change" class="dropdown"></select>
+</div>
+</div>
+<div id="main_container" class="main_container">
+    <div class="container_l">
+        <svg id="svg_map"></svg>
+    </div>
+    <div class="container_r">
+        <p></p>
+        <svg id="svg_pca"></svg>
+    </div>
+<input type="range" id="yearSlider" min="1960" max="2020" step="1" value="2000">
+<label id="yearLabel">Year: 2000</label>
+</div>
+
+<div id="bottom_container" class="bottom_container">
+    <div class="bottom_container">
+        <svg id="svg_line_plot"></svg>
+    </div>
+</div>
+
+
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/topojson/3.0.0/topojson.min.js"></script>
+
+    <script src="{{url_for('static',filename='js/lineplot.js')}}"></script>
+    <script src="{{url_for('static',filename='js/tooltip.js')}}"></script>
+    <script src="{{url_for('static',filename='js/highlightCountry.js')}}"></script>
+
+    <script src="{{url_for('static',filename='js/indicator.js')}}"></script>
+    <script src="{{url_for('static',filename='js/map.js')}}"></script>
+    <script src="{{url_for('static',filename='js/plot.js')}}"></script>
+    <script src="{{url_for('static',filename='js/slider.js')}}"></script>
+
+<script>
+    var data = {{ data | safe }};
+    var pca_data = {{ pca_data | safe}};
+    console.log(data);
+    initMap();
+    pca_plot(pca_data);
+</script>
+</body>
+</html>
