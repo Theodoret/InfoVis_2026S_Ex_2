@@ -126,7 +126,10 @@ function initPlot() {
     svg.append("g")
         .attr("class", "brush")
         .call(brush);
+    // 5.1: Keep dots interactive by placing the brush behind the scatterplot marks
+    svg.select(".brush").lower();
 
+    // 5.1: Hover coordination - highlight country on map when hovering over dot
     dots.on("mouseover", function(event, d) {
         hoveredCountryCode = d.code;
         renderScatterSelection();
@@ -141,6 +144,7 @@ function initPlot() {
             <strong>Land area (sq. km):</strong> ${d.area}<br/>
             <strong>Population, total:</strong> ${d.population}<br/>
         `);
+        // 5.1: Call map highlight function to highlight corresponding country
         if (window.highlightCountryOnMap) {
             window.highlightCountryOnMap(d.country);
         }
@@ -154,6 +158,7 @@ function initPlot() {
         hoveredCountryCode = null;
         renderScatterSelection();
 
+        // 5.1: Clear map highlight when mouse leaves dot
         if (window.clearCountryHighlightOnMap) {
             window.clearCountryHighlightOnMap();
         }

@@ -115,6 +115,7 @@ text.title {
 .brush .selection {
     fill: rgba(242, 142, 43, 0.2);
     stroke: #f28e2b;
+    pointer-events: none;
 }
 
 .dot {

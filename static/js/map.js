@@ -98,7 +98,7 @@ function getChoroplethColorScale() {
         .domain(d3.extent(values));
 }
 
-// 6.1 & 6.2: Render map with brush highlighting and choropleth coloring by selected year and indicator
+// 6.1 & 6.2 & 5.1: Render map with brush highlighting, choropleth coloring, and hover highlighting
 function renderMapSelection() {
     const colorScale = getChoroplethColorScale();
 
@@ -114,6 +114,7 @@ function renderMapSelection() {
                     : (record && colorScale && indicator ? colorScale(+record[indicator]) : (COUNTRIES.includes(countryName) ? "#d9d9d9" : "white"));
             }
 
+            // 5.1: Highlight hovered country on map
             if (hoveredCountryName && hoveredCountryName === countryName) {
                 return "#f28e2b";
             }
@@ -155,11 +156,13 @@ function updateMap() {
     renderMapSelection();
 }
 
+// 5.1: Highlight country on map when hovering over scatterplot dot
 function highlightCountryOnMap(countryName) {
     hoveredCountryName = countryName;
     renderMapSelection();
 }
 
+// 5.1: Clear highlight when mouse leaves scatterplot dot
 function clearCountryHighlightOnMap() {
     hoveredCountryName = null;
     renderMapSelection();
