@@ -19,6 +19,9 @@ function initPlot() {
         .range([height - margin.bottom, margin.top])
         .nice();
 
+    let brushedCountryCodes = new Set();
+    let hoveredCountryCode = null;
+
     // 2. Add Axes
 //    svg.append("g")
 //        .attr("transform", `translate(0,${height - margin.bottom})`)
@@ -48,7 +51,16 @@ function initPlot() {
         .attr("cy", d => yScale(d.y))
         .attr("r", 5)
         .attr("fill", "#4e79a7")
-        .attr("stroke", "#fff");
+        .attr("stroke", "#fff")
+        .attr("stroke-width", 1);
+
+    function renderScatterSelection() {
+        dots
+            .attr("fill", d => (brushedCountryCodes.has(d.code) || hoveredCountryCode === d.code) ? "#f28e2b" : "#4e79a7")
+            .attr("opacity", d => brushedCountryCodes.size === 0 || brushedCountryCodes.has(d.code) ? 1 : 0.25)
+            .attr("r", d => hoveredCountryCode === d.code ? 8 : brushedCountryCodes.has(d.code) ? 6 : 5)
+            .attr("stroke", d => brushedCountryCodes.has(d.code) ? "#333" : "#fff");
+    }
 
     // 4. Clear Association (Task 3: Tooltips/Labels)
     // Create a simple tooltip div in your body if it doesn't exist
@@ -61,7 +73,58 @@ function initPlot() {
         .style("height", "200px")
         .style("padding", "5px");
 
+    function clearBrushedSelection() {
+        brushedCountryCodes = new Set();
+        hoveredCountryCode = null;
+        renderScatterSelection();
+
+        if (window.updateMapSelection) {
+            window.updateMapSelection([]);
+        }
+
+        if (window.updateLinePlot) {
+            window.updateLinePlot([]);
+        }
+    }
+
+    function updateBrushedSelection(selectedCountries) {
+        brushedCountryCodes = new Set(selectedCountries.map(d => d.code));
+        renderScatterSelection();
+
+        if (window.updateMapSelection) {
+            window.updateMapSelection(selectedCountries.map(d => d.country));
+        }
+
+        if (window.updateLinePlot) {
+            window.updateLinePlot(selectedCountries.map(d => d.code));
+        }
+    }
+
+    const brush = d3.brush()
+        .extent([[margin.left, margin.top], [width - margin.right, height - margin.bottom]])
+        .on("start brush end", function(event) {
+            if (!event.selection) {
+                clearBrushedSelection();
+                return;
+            }
+
+            const [[x0, y0], [x1, y1]] = event.selection;
+            const selectedCountries = pca_data.filter(d => {
+                const x = xScale(d.x);
+                const y = yScale(d.y);
+                return x0 <= x && x <= x1 && y0 <= y && y <= y1;
+            });
+
+            updateBrushedSelection(selectedCountries);
+        });
+
+    svg.append("g")
+        .attr("class", "brush")
+        .call(brush);
+
     dots.on("mouseover", function(event, d) {
+        hoveredCountryCode = d.code;
+        renderScatterSelection();
         tooltip.style("visibility", "visible").text(d.country);
         tooltip.html(`
             <strong><u>${d.country}</u></strong><br/>
@@ -73,25 +136,25 @@ function initPlot() {
             <strong>Land area (sq. km):</strong> ${d.area}<br/>
             <strong>Population, total:</strong> ${d.population}<br/>
         `);
-        d3.select(this).attr("r", 8).attr("fill", "orange");
-
-        // Task 5 Prep: Trigger map highlight
-        if(window.highlightMapCountry) highlightMapCountry(d.country);
+        if (window.highlightCountryOnMap) {
+            window.highlightCountryOnMap(d.country);
+        }
     })
     .on("mousemove", function(event, d) {
         tooltip.style("top", (event.pageY - 10) + "px")
                .style("left", (event.pageX + 10) + "px");
-
-        // CALL THE HIGHLIGHT FUNCTION (The link!)
-        highlightCountryOnMap(d.country);
     })
     .on("mouseout", function() {
         tooltip.style("visibility", "hidden");
-        d3.select(this).attr("r", 5).attr("fill", "#4e79a7");
+        hoveredCountryCode = null;
+        renderScatterSelection();
 
-        if(window.highlightMapCountry) highlightMapCountry(null);
-
-        // CLEAR THE HIGHLIGHT
-        highlightCountryOnMap(null);
+        if (window.clearCountryHighlightOnMap) {
+            window.clearCountryHighlightOnMap();
+        }
     });
+
+    renderScatterSelection();
+
+    window.clearScatterSelection = clearBrushedSelection;
 }
