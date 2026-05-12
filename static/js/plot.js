@@ -59,7 +59,8 @@ function initPlot() {
     function renderScatterSelection() {
         dots
             .attr("fill", d => (brushedCountryCodes.has(d.code) || hoveredCountryCode === d.code) ? "#f28e2b" : "#4e79a7")
-            .attr("opacity", d => brushedCountryCodes.size === 0 || brushedCountryCodes.has(d.code) ? 1 : 0.25)
+            // 5.2: Keep hovered dots visible even when a brush selection is active
+            .attr("opacity", d => hoveredCountryCode === d.code || brushedCountryCodes.size === 0 || brushedCountryCodes.has(d.code) ? 1 : 0.25)
             .attr("r", d => hoveredCountryCode === d.code ? 8 : brushedCountryCodes.has(d.code) ? 6 : 5)
             .attr("stroke", d => brushedCountryCodes.has(d.code) ? "#333" : "#fff");
     }
@@ -102,6 +103,23 @@ function initPlot() {
         if (window.updateLinePlot) {
             window.updateLinePlot(selectedCountries.map(d => d.code));
         }
+    }
+
+    // 5.2: Highlight a scatterplot dot when hovering over a country on the map
+    function highlightCountryOnScatterplot(countryName) {
+        const match = pca_data.find(d => d.country === countryName || d.code === countryName);
+        if (!match) {
+            return;
+        }
+
+        hoveredCountryCode = match.code;
+        renderScatterSelection();
+    }
+
+    // 5.2: Clear scatterplot highlight when the map hover ends
+    function clearCountryHighlightOnScatterplot() {
+        hoveredCountryCode = null;
+        renderScatterSelection();
     }
 
     // 6.1: Rectangular brush selection using d3.brush
@@ -167,4 +185,6 @@ function initPlot() {
     renderScatterSelection();
 
     window.clearScatterSelection = clearBrushedSelection;
+    window.highlightCountryOnScatterplot = highlightCountryOnScatterplot;
+    window.clearCountryHighlightOnScatterplot = clearCountryHighlightOnScatterplot;
 }

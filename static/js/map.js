@@ -52,6 +52,26 @@ function initMap() {
                 }
             });
 
+        // 5.2: Hovering a map country highlights the corresponding scatterplot dot
+        map.on("mouseover", function(event, d) {
+            const countryName = getMapCountryName(d);
+            hoveredCountryName = countryName;
+            renderMapSelection();
+
+            if (window.highlightCountryOnScatterplot) {
+                window.highlightCountryOnScatterplot(countryName);
+            }
+        })
+        .on("mouseout", function() {
+            hoveredCountryName = null;
+            renderMapSelection();
+
+            // 5.2: Clear scatterplot highlight when the mouse leaves the map country
+            if (window.clearCountryHighlightOnScatterplot) {
+                window.clearCountryHighlightOnScatterplot();
+            }
+        });
+
         renderMapSelection();
     });
 
