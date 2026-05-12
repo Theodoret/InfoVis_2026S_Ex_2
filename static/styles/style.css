@@ -62,7 +62,7 @@ text.title {
 }
 .container_r {
     float: left; display: table-cell; vertical-align:top;
-    height: 10%; padding: 10px; width: 10%;
+    height: auto; padding: 10px; width: 400px;
     border: 0 solid black;
     font-size: large;
 }
@@ -94,10 +94,18 @@ text.title {
     box-shadow: rgba(0, 0, 0, 0.05) 0 0 0 1px, rgb(209, 213, 219) 0 0 0 1px inset;
     opacity: 0.0; font-size: large;
 }
+#svg_pca {
+     width: auto;
+     height: 450px;
+}
 
-/* Highlight style (Task 5) */
-.highlighted {
-    fill: orange !important;
-    stroke: #333;
-    stroke-width: 2px;
+.bottom_container {
+    float: left; align-content: center;
+    height: 400px; width: 90%;
+    margin-top:5px; margin-bottom: 10px; margin-left:5px; padding-top: 5px; padding-bottom: 10px; padding-left:5px;
+    box-shadow: rgba(0, 0, 0, 0.05) 0 0 0 1px, rgb(209, 213, 219) 0 0 0 1px inset;
+}
+#svg_line_plot {
+    width: 85%;
+    height: 350px;
 }

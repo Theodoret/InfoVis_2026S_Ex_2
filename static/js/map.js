@@ -2,16 +2,12 @@ let mapWidth = 800;
 let mapHeight = 500;
 let map = null;
 let mapData = null;
+let dataCountries = new Set();
 
-
-const COUNTRIES = ['Afghanistan', 'Albania', 'Algeria', 'Angola', 'Argentina', 'Armenia', 'Australia', 'Austria',
-             'Azerbaijan', 'Brazil', 'Bulgaria', 'Cameroon', 'Chile', 'China', 'Colombia', 'Croatia', 'Cuba',
-             'Cyprus', 'Czech Republic', 'Ecuador', 'Egypt, Arab Rep.', 'Eritrea', 'Ethiopia', 'France', 'Germany',
-             'Ghana', 'Greece', 'India', 'Indonesia', 'Iran, Islamic Rep.', 'Iraq', 'Ireland', 'Italy', 'Japan',
-             'Jordan', 'Kazakhstan', 'Kenya', 'Lebanon', 'Malta', 'Mexico', 'Morocco', 'Pakistan', 'Peru',
-             'Philippines', 'Russian Federation', 'Syrian Arab Republic', 'Tunisia', 'Turkey', 'Ukraine'];
 
 function initMap() {
+
+    dataCountries = new Set(data.map(d => d["Country Code"]));
 
     // loads the world map as topojson
     d3.json("../static/data/world-topo.json").then(function (countries) {
@@ -41,31 +37,38 @@ function initMap() {
             .attr('d', path)
             .attr('stroke', 'black')
             .attr('stroke-width', 0.5)
-            .attr('fill', function(d) {
-                if (COUNTRIES.includes(d.properties.admin)) {
-                    return "grey"; // Color for countries in the array
-                } else {
-                    return "white"; // Default color
-                }
-            });
+            .attr('fill', d => dataCountries.has(d.properties.id) ? 'blue' : 'white')
+            .attr('cursor', d => dataCountries.has(d.properties.id) ? 'pointer' : 'default')
+            .attr('stroke-width', d => dataCountries.has(d.properties.id) ? 0.5 : 0.3)
+            .on("mouseover", function(event, d) {
+                if (!dataCountries.has(d.properties.id)) return;
+                highlightCountry(d.properties.id);
+                showTooltip(event, d.properties.id);
+
+            })
+            .on("mousemove", moveTooltip)
+            .on("mouseout", function(event, d) {
+                unhighlightCountry(d.properties.id);
+                hideTooltip();
+            })
+        // line plot below
+        map.on("click", function(event, d){
+            if (!dataCountries.has(d.properties.id)) return;
+            selectedCountryCode = d.properties.id;
+            updateLinePlot();
+        })
     });
 
 
 }
 
-function highlightCountryOnMap(countryName) {
-    // 1. Select all country paths in the map SVG
+// I know that no countries are entering or leaving the mix over the years, I still wanted to play with it a little bit
+function updateMap(){
+    const newYearCountries = new Set(
+        data.filter(d => d.year == currentYear).map(d => d["Country Code"])
+    );
     d3.select("#svg_map").selectAll("path")
-        .classed("highlighted", function(d) {
-            // Check if this map feature matches the hovered country
-            // Use .id or .properties.name depending on your TopoJSON
-            return d.properties.admin === countryName;
-        });
-
-    // 2. Optional: Bring the highlighted country to the front
-//    if (countryName) {
-//        d3.select("#svg_map").selectAll("path")
-//          .filter(d => d.properties.admin === countryName)
-//          .raise();
-//    }
+        .transition().duration(20)
+        .attr("fill", d => newYearCountries.has(d.properties.id) ? "blue": "white")
+        .attr("cursor", d => newYearCountries.has(d.properties.id) ? "pointer": "default")
 }
