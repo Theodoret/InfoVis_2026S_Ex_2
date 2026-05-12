@@ -1,5 +1,7 @@
+// 6.2: Global year state for temporal interaction
 let currentYear = 2020;
 
+// 6.2: Initialize year slider control
 function initSlider() {
     const slider = d3.select("#yearSlider");
     const label = d3.select("#yearLabel");
@@ -18,6 +20,7 @@ function initSlider() {
 
     label.text(`Year: ${currentYear}`);
 
+    // 6.2: Update all views when year changes
     slider.on("input", function() {
         currentYear = +this.value;
         label.text(`Year: ${currentYear}`);

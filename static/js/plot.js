@@ -19,6 +19,7 @@ function initPlot() {
         .range([height - margin.bottom, margin.top])
         .nice();
 
+    // 6.1: Track brushed countries for rectangular brush selection
     let brushedCountryCodes = new Set();
     let hoveredCountryCode = null;
 
@@ -54,6 +55,7 @@ function initPlot() {
         .attr("stroke", "#fff")
         .attr("stroke-width", 1);
 
+    // 6.1: Highlight brushed countries in scatterplot
     function renderScatterSelection() {
         dots
             .attr("fill", d => (brushedCountryCodes.has(d.code) || hoveredCountryCode === d.code) ? "#f28e2b" : "#4e79a7")
@@ -73,6 +75,7 @@ function initPlot() {
         .style("height", "200px")
         .style("padding", "5px");
 
+    // 6.1: Clear brush selection and reset all views
     function clearBrushedSelection() {
         brushedCountryCodes = new Set();
         hoveredCountryCode = null;
@@ -87,6 +90,7 @@ function initPlot() {
         }
     }
 
+    // 6.1: Coordinate brush selection across map and time series
     function updateBrushedSelection(selectedCountries) {
         brushedCountryCodes = new Set(selectedCountries.map(d => d.code));
         renderScatterSelection();
@@ -100,6 +104,7 @@ function initPlot() {
         }
     }
 
+    // 6.1: Rectangular brush selection using d3.brush
     const brush = d3.brush()
         .extent([[margin.left, margin.top], [width - margin.right, height - margin.bottom]])
         .on("start brush end", function(event) {

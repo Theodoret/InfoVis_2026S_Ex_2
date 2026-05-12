@@ -24,9 +24,10 @@ function initLinePlot() {
         indicatorDropdown.property("value", indicators[0]);
     }
 
+    // 6.1 & 6.2: Update time series and map when indicator changes
     indicatorDropdown.on("change", function() {
         updateLinePlot(selectedLineCountryCodes);
-
+            // 6.1 & 6.2: Update time series and map when indicator changes
         if (window.updateMap) {
             window.updateMap();
         }
@@ -65,7 +66,7 @@ function updateLinePlot(countryCodes = []) {
             .attr("y", height / 2)
             .attr("text-anchor", "middle")
             .attr("fill", "#666")
-            .text("Brush countries in the PCA scatterplot to show their time series.");
+                .text("Brush countries in the PCA scatterplot to show their time series."); // 6.1: Handle empty brush selection
         return;
     }
 
@@ -136,7 +137,7 @@ function updateLinePlot(countryCodes = []) {
         .attr("y2", height)
         .attr("stroke", "#d62728")
         .attr("stroke-width", 1.5)
-        .attr("stroke-dasharray", "4 3");
+         .attr("stroke-dasharray", "4 3"); // 6.2: Show selected year marker
 
     svg.append("text")
         .attr("x", width / 2)
@@ -179,7 +180,7 @@ function updateLinePlot(countryCodes = []) {
         .attr("r", 4)
         .attr("fill", d => colorScale(d.code))
         .attr("stroke", "white")
-        .attr("stroke-width", 1.5);
+         .attr("stroke-width", 1.5); // 6.2: Mark data points at selected year
 
     svg.selectAll(".country-label")
         .data(countries)

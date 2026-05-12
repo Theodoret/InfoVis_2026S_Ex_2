@@ -2,6 +2,7 @@ let mapWidth = 800;
 let mapHeight = 500;
 let map = null;
 let mapData = null;
+// 6.1: Track brushed countries for map highlighting
 let selectedCountryNames = new Set();
 let hoveredCountryName = null;
 
@@ -66,6 +67,7 @@ function getCurrentIndicator() {
     return indicatorNode.empty() ? null : indicatorNode.property("value");
 }
 
+// 6.2: Fetch country data for selected year to support temporal updates
 function getCountryRecordForYear(countryName) {
     const year = Number(currentYear);
     const byName = data.find(d => d["Country Name"] === countryName && +d.year === year);
@@ -76,6 +78,7 @@ function getCountryRecordForYear(countryName) {
     return data.find(d => d["Country Code"] === countryName && +d.year === year);
 }
 
+// 6.2: Build choropleth color scale based on selected year and indicator
 function getChoroplethColorScale() {
     const indicator = getCurrentIndicator();
     if (!indicator) {
@@ -95,6 +98,7 @@ function getChoroplethColorScale() {
         .domain(d3.extent(values));
 }
 
+// 6.1 & 6.2: Render map with brush highlighting and choropleth coloring by selected year and indicator
 function renderMapSelection() {
     const colorScale = getChoroplethColorScale();
 
@@ -140,11 +144,13 @@ function renderMapSelection() {
         });
 }
 
+// 6.1: Update map highlighting when brush selection changes
 function updateMapSelection(countryNames) {
     selectedCountryNames = new Set((countryNames || []).filter(Boolean));
     renderMapSelection();
 }
 
+// 6.2: Update map when year or indicator slider changes
 function updateMap() {
     renderMapSelection();
 }
