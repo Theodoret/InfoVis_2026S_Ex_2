@@ -70,16 +70,17 @@ function updateLinePlot(countryCodes = []) {
         return;
     }
 
+    // 5.3: Resolve either country names or codes for map-clicked selections
     const countries = selectedLineCountryCodes
-        .map(code => {
+        .map(countryKey => {
             const countryValues = data
-                .filter(d => d["Country Code"] === code)
+                .filter(d => d["Country Code"] === countryKey || d["Country Name"] === countryKey)
                 .sort((a, b) => +a.year - +b.year)
                 .map(d => ({...d, year: +d.year}));
 
             return {
-                code,
-                name: countryValues[0]?.["Country Name"] || code,
+                code: countryValues[0]?.["Country Code"] || countryKey,
+                name: countryValues[0]?.["Country Name"] || countryKey,
                 values: countryValues
             };
         })
@@ -159,6 +160,7 @@ function updateLinePlot(countryCodes = []) {
         .x(d => xScale(d.year))
         .y(d => yScale(+d[indicator]));
 
+    // 5.3: Render the selected country's line from 1960 to 2020
     svg.selectAll(".country-line")
         .data(countries)
         .join("path")

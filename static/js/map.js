@@ -52,6 +52,16 @@ function initMap() {
                 }
             });
 
+        // 5.3: Clicking a country on the map renders its time series in the line plot
+        map.on("click", function(event, d) {
+            const countryName = getMapCountryName(d);
+
+            if (window.updateLinePlot) {
+                // 5.3: Pass the clicked country name to the line plot without affecting brushing
+                window.updateLinePlot([countryName]);
+            }
+        });
+
         // 5.2: Hovering a map country highlights the corresponding scatterplot dot
         map.on("mouseover", function(event, d) {
             const countryName = getMapCountryName(d);
