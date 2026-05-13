@@ -1,6 +1,4 @@
-#!/bin/sh
-'''exec' "/home/ivan/Desktop/TU Wien/InfoVis/InfoVis_2026S_Ex_2/.venv/bin/python3" "$0" "$@"
-' '''
+#!/home/theo/Downloads/InfoVisUE_2026S_exercise2/.venv/bin/python
 # -*- coding: utf-8 -*-
 import re
 import sys
