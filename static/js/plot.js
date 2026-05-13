@@ -1,14 +1,13 @@
 function initPlot() {
     const svg = d3.select("#svg_plot");
 
-    // Get container dimensions from your CSS or define them here
     const width = 500;
     const height = 400;
     const margin = {top: 30, right: 30, bottom: 50, left: 50};
 
     svg.attr("width", width).attr("height", height);
 
-    // 1. Setup Scales (Task 3: PCA result as 2D scatterplot)
+    // Task 3: Setup Scales (PCA result as 2D scatterplot)
     const xScale = d3.scaleLinear()
         .domain(d3.extent(pca_data, d => d.x))
         .range([margin.left, width - margin.right])
@@ -23,7 +22,7 @@ function initPlot() {
     let brushedCountryCodes = new Set();
     let hoveredCountryCode = null;
 
-    // 2. Add Axes
+    // Task 3: Add Axes
 //    svg.append("g")
 //        .attr("transform", `translate(0,${height - margin.bottom})`)
 //        .call(d3.axisBottom(xScale))
@@ -44,6 +43,7 @@ function initPlot() {
 //        .text("PC2");
 
     // 3. Draw Dots (Task 3)
+    const dot_color = "#4e79a7"
     const dots = svg.selectAll(".dot")
         .data(pca_data)
         .join("circle")
@@ -51,21 +51,21 @@ function initPlot() {
         .attr("cx", d => xScale(d.x))
         .attr("cy", d => yScale(d.y))
         .attr("r", 5)
-        .attr("fill", "#4e79a7")
+        .attr("fill", dot_color)
         .attr("stroke", "#fff")
         .attr("stroke-width", 1);
 
     // 6.1: Highlight brushed countries in scatterplot
     function renderScatterSelection() {
         dots
-            .attr("fill", d => (brushedCountryCodes.has(d.code) || hoveredCountryCode === d.code) ? "#f28e2b" : "#4e79a7")
+            .attr("fill", d => (brushedCountryCodes.has(d.code) || hoveredCountryCode === d.code) ? "#f28e2b" : dot_color)
             // 5.2: Keep hovered dots visible even when a brush selection is active
             .attr("opacity", d => hoveredCountryCode === d.code || brushedCountryCodes.size === 0 || brushedCountryCodes.has(d.code) ? 1 : 0.25)
             .attr("r", d => hoveredCountryCode === d.code ? 8 : brushedCountryCodes.has(d.code) ? 6 : 5)
             .attr("stroke", d => brushedCountryCodes.has(d.code) ? "#333" : "#fff");
     }
 
-    // 4. Clear Association (Task 3: Tooltips/Labels)
+    // Bonus: Clear Association (Tooltips/Labels)
     // Create a simple tooltip div in your body if it doesn't exist
     const tooltip = d3.select("body").append("div")
         .attr("class", "tooltip")
@@ -151,6 +151,7 @@ function initPlot() {
     dots.on("mouseover", function(event, d) {
         hoveredCountryCode = d.code;
         renderScatterSelection();
+        // Bonus: show details-on-demand
         tooltip.style("visibility", "visible").text(d.country);
         tooltip.html(`
             <strong><u>${d.country}</u></strong><br/>

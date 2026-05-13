@@ -16,27 +16,27 @@ const COUNTRIES = ['Afghanistan', 'Albania', 'Algeria', 'Angola', 'Argentina', '
 
 function initMap() {
 
-    // loads the world map as topojson
+    // Task 4: loads the world map as topojson
     d3.json("../static/data/world-topo.json").then(function (countries) {
 
-        // defines the map projection method and scales the map within the SVG
+        // Task 4: defines the map projection method and scales the map within the SVG
         let projection = d3.geoEqualEarth()
             .scale(180)
             .translate([mapWidth / 2, mapHeight / 2]);
 
-        // generates the path coordinates from topojson
+        // Task 4: generates the path coordinates from topojson
         let path = d3.geoPath()
             .projection(projection);
 
-        // configures the SVG element
+        // Task 4: configures the SVG element
         let svg = d3.select("#svg_map")
             .attr("width", mapWidth)
             .attr("height", mapHeight);
 
-        // map geometry
+        // Task 4: map geometry
         mapData = topojson.feature(countries, countries.objects.countries).features;
 
-        // generates and styles the SVG path
+        // Task 4: generates and styles the SVG path
         map = svg.append("g")
             .selectAll('path')
             .data(mapData)

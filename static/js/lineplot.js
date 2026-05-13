@@ -49,7 +49,7 @@ function updateLinePlot(countryCodes = []) {
     const totalWidth = svgElement.clientWidth || 900;
     const totalHeight = svgElement.clientHeight || 500;
 
-    const margin = {top: 25, right: 20, bottom: 45, left: 55};
+    const margin = {top: 25, right: 150, bottom: 25, left: 20};
     const width = Math.max(totalWidth - margin.left - margin.right, 0);
     const height = Math.max(totalHeight - margin.top - margin.bottom, 0);
 
